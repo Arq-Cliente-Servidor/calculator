@@ -24,12 +24,12 @@ int main(int argc, char *argv[]) {
   message req;
   string op(argv[1]);
   if (argc == 3) {
-    int op1 = atoi(argv[2]);
+    string op1 = argv[2];
     req << op << op1;
   }
   if (argc == 4) {
-    int op1 = atoi(argv[2]);
-    int op2 = atoi(argv[3]);
+    string op1 = argv[2];
+    string op2 = argv[3];
     req << op << op1 << op2;
   }
   s.send(req);

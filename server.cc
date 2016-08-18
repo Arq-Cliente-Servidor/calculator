@@ -1,11 +1,20 @@
 
 #include <cmath>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <zmqpp/zmqpp.hpp>
 
 using namespace std;
 using namespace zmqpp;
+
+int toInt(string x) {
+  stringstream s;
+  s << x;
+  int r;
+  s >> r;
+  return r;
+}
 
 int main(int argc, char *argv[]) {
   const string endpoint = "tcp://*:4242";
@@ -26,10 +35,12 @@ int main(int argc, char *argv[]) {
     message req;
     s.receive(req);
     string op;
-    int op1 = 0;
-    int op2 = 0;
-    req >> op >> op1;
+    string ope1;
+    string ope2;
+    req >> op >> ope1;
     int result;
+    int op1 = toInt(ope1);
+    int op2;
     if (op == "sqrt") {
       result = sqrt(op1);
     }
@@ -37,21 +48,30 @@ int main(int argc, char *argv[]) {
       result = log(op1);
     }
     if (op == "add") {
-      req >> op2;
+      req >> ope2;
+      op2 = toInt(ope2);
       result = op1 + op2;
     }
     if (op == "sub") {
-      req >> op2;
+      req >> ope2;
+      op2 = toInt(ope2);
       result = op1 - op2;
     }
     if (op == "mult") {
-      req >> op2;
+      req >> ope2;
+      op2 = toInt(ope2);
       result = op1 * op2;
     }
     if (op == "div") {
-      req >> op2;
+      req >> ope2;
+      op2 = toInt(ope2);
       result = op1 / op2;
     }
+    if (op == "mmat") {
+      req >> ope2;
+      op2 = toInt(ope2);
+    }
+    cout << op << " -> " << ope1 << " " << ope2 << endl;
     message rep;
     rep << result;
     s.send(rep);
