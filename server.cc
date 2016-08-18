@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
 
     string op;
     int op1 = 0, op2 = 0;
-    uint64_t result = 0;
+    int64_t result = 0;
     req >> op;
 
     // binary operations

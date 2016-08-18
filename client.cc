@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
 
   message rep;
   s.receive(rep);
-  uint64_t result = 0;
+  int64_t result = 0;
   rep >> result;
   cout << "Response " << result << endl;
   cout << "Finished." << endl;
