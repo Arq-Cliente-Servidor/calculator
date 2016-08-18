@@ -1,20 +1,11 @@
 
 #include <cmath>
 #include <iostream>
-#include <sstream>
 #include <string>
 #include <zmqpp/zmqpp.hpp>
 
 using namespace std;
 using namespace zmqpp;
-
-int toInt(string x) {
-  stringstream s;
-  s << x;
-  int r;
-  s >> r;
-  return r;
-}
 
 int main(int argc, char *argv[]) {
   const string endpoint = "tcp://*:4242";
@@ -34,44 +25,49 @@ int main(int argc, char *argv[]) {
     cout << "Receiving message..." << endl;
     message req;
     s.receive(req);
+
     string op;
-    string ope1;
-    string ope2;
-    req >> op >> ope1;
-    int result;
-    int op1 = toInt(ope1);
-    int op2;
-    if (op == "sqrt") {
-      result = sqrt(op1);
-    }
-    if (op == "ln") {
-      result = log(op1);
-    }
+    int op1 = 0, op2 = 0;
+    uint64_t result = 0;
+    req >> op;
+
+    // binary operations
     if (op == "add") {
-      req >> ope2;
-      op2 = toInt(ope2);
+      req >> op1 >> op2;
       result = op1 + op2;
     }
-    if (op == "sub") {
-      req >> ope2;
-      op2 = toInt(ope2);
+    else if (op == "sub") {
+      req >> op1 >> op2;
       result = op1 - op2;
     }
-    if (op == "mult") {
-      req >> ope2;
-      op2 = toInt(ope2);
+    else if (op == "mult") {
+      req >> op1 >> op2;
       result = op1 * op2;
     }
-    if (op == "div") {
-      req >> ope2;
-      op2 = toInt(ope2);
+    else if (op == "div") {
+      req >> op1 >> op2;
       result = op1 / op2;
     }
-    if (op == "mmat") {
-      req >> ope2;
-      op2 = toInt(ope2);
+
+    // unary operations
+    else if (op == "sqrt") {
+      req >> op1;
+      result = sqrt(op1);
     }
-    cout << op << " -> " << ope1 << " " << ope2 << endl;
+    else if (op == "exp") {
+      req >> op1;
+      result = exp(op1);
+    }
+
+    // matrix operations
+    else if (op == "mmult") {
+      // TODO
+    }
+    else if (op == "mdet") {
+      // TODO
+    }
+
+    cout << op << " -> " << op1 << " " << op2 << endl;
     message rep;
     rep << result;
     s.send(rep);
