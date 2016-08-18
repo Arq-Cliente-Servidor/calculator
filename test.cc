@@ -8,7 +8,7 @@ vector<vector<int>> createMatrix(string &mat) {
 
   for (int i = 0; i < mat.size(); i++) {
     if (mat[i] == '[') continue;
-    if (mat[i] == ']') {
+    if (mat[i] == ']' and line.size()) {
       vector<int> col;
       stringstream ss(line);
       int value;
@@ -23,6 +23,7 @@ vector<vector<int>> createMatrix(string &mat) {
     else line += mat[i];
   }
 
+  cout << "rows: " << matrix.size() << " cols: " << matrix[0].size() << endl;
   return matrix;
 }
 
