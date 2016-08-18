@@ -37,6 +37,23 @@ void printMatrix(vector<vector<int>> &matrix) {
   cout << endl;
 }
 
+vector<vector<int>> multMatrix(vector<vector<int>> &mat1, vector<vector<int>> &mat2) {
+  int n = mat1[0].size();
+  int m = mat1.size();
+  int p = mat2[0].size();
+  vector<vector<int>> result(m, vector<int>(p));
+
+  for (int i = 0; i < m; i++) {
+    for (int j = 0; j < p; j++) {
+      for (int k = 0; k < n; k++) {
+        result[i][j] += mat1[i][k] * mat2[k][j];
+      }
+    }
+  }
+
+  return result;
+}
+
 int main(int argc, char const *argv[]) {
   // Ejemplo de formato:
   // [[1 2 3][4 5 6][1 2 3]] [[7 8 4][2 3 4][3 2 1]]
@@ -51,6 +68,9 @@ int main(int argc, char const *argv[]) {
   cout << m2 << endl;
   vector<vector<int>> mat2 = createMatrix(m2);
   printMatrix(mat2);
+
+  vector<vector<int>> mat3 = multMatrix(mat1, mat2);
+  printMatrix(mat3);
 
   return 0;
 }
