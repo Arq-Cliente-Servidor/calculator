@@ -2,6 +2,8 @@
 
 using namespace std;
 
+typedef vector<vector<int>> Matrix;
+
 vector<vector<int>> createMatrix(string &mat) {
   vector<vector<int>> matrix;
   string line;
@@ -24,7 +26,7 @@ vector<vector<int>> createMatrix(string &mat) {
       line += mat[i];
   }
 
-  cout << "rows: " << matrix.size() << " cols: " << matrix[0].size() << endl;
+  // cout << "rows: " << ma/trix.size() << " cols: " << matrix[0].size() << endl;
   return matrix;
 }
 
@@ -43,7 +45,7 @@ bool checkMat(string &mat) {
   return brackets.empty();
 }
 
-void printMatrix(vector<vector<int>> &matrix) {
+void printMatrix(vector<vector<double>> &matrix) {
   for (int i = 0; i < matrix.size(); i++) {
     for (int j = 0; j < matrix[i].size(); j++) {
       cout << matrix[i][j] << " ";
@@ -86,16 +88,50 @@ string matToString(vector<vector<int>> &mat) {
   return text + "]";
 }
 
+double detMatrix(Matrix &mat) {
+  int rows = mat.size();
+  int cols = mat[0].size();
+  double pivot = 0.0;
+  double aux = 0.0;
+  double ans = 1.0;
+  vector<vector<double>> result(rows, vector<double>(cols));
+
+  // convert matrix int to matrix double
+  for (int i = 0; i < rows; i++) {
+    for (int j = 0; j < cols; j++) {
+      result[i][j] = (double)mat[i][j];
+    }
+  }
+
+  for (int j = 0; j < cols; j++) {
+    pivot = result[j][j];
+    for (int i = j + 1; i < rows; i++) {
+      aux = result[i][j];
+      for (int k = 0; k < cols; k++) {
+        result[i][k] -= result[j][k] * (aux / pivot);
+      }
+    }
+  }
+
+  for (int i = 0; i < rows; i++) {
+    ans *= result[i][i];
+  }
+
+  return ans;
+}
+
 int main(int argc, char const *argv[]) {
   // Ejemplo de formato:
   // [[1 2 3][4 5 6][1 2 3]] [[7 8 4][2 3 4][3 2 1]]
 
   string m1(argv[1]);
-  cout << checkMat(m1) << endl;
+  vector<vector<int>> mat1 = createMatrix(m1);
+  cout << detMatrix(mat1) << endl;
+  // printMatrix(mat2);
+  // cout << checkMat(m1) << endl;
   // string m2(argv[2]);
 
   // cout << m1 << endl;
-  // vector<vector<int>> mat1 = createMatrix(m1);
   // printMatrix(mat1);
   // cout << matToString(mat1) << endl;
 

@@ -20,15 +20,15 @@ Matrix createMatrix(string &mat) {
     if (mat[i] == '[')
       continue;
     if (mat[i] == ']' and line.size()) {
-      vector<int> col;
+      vector<int> row;
       stringstream ss(line);
       int value;
 
       while (ss >> value) {
-        col.push_back(value);
+        row.push_back(value);
       }
 
-      matrix.push_back(col);
+      matrix.push_back(row);
       line = "";
     } else
       line += mat[i];
@@ -85,6 +85,32 @@ Matrix multMatrix(Matrix &mat1, Matrix &mat2) {
   }
 
   return result;
+}
+
+Matrix detMatrix(Matrix &mat) {
+  int rows = mat.size();
+  int cols = mat[0].size();
+  double pivot = 0.0;
+  double aux = 0.0;
+  vector<vector<double>> result(rows, vector<double>(cols));
+
+  // convert matrix int to matrix double
+  for (int i = 0; i < rows); i++) {
+    for (int j = 0; j < cols; j++) {
+      result[i][j] = mat[i][j];
+    }
+  }
+
+  for (int j = 0; j < cols; j++) {
+    pivot = result[i][i];
+    for (int i = j + 1; i < rows; i++) {
+      aux = result[i][j];
+      for (int k = 0; k < cols; k++) {
+        result[i][k] = result[i][k] - (result[j][k] * pivot / aux);
+      }
+    }
+  }
+
 }
 
 string matToString(Matrix &mat) {
@@ -182,9 +208,14 @@ int main(int argc, char *argv[]) {
       }
     }
 
-    // else if (op == "mdet") {
-    //   // TODO
-    // }
+    else if (op == "mdet") {
+      if (checkMat(ope1)) {
+        mat1 = createMatrix(ope1);
+        resultm = to_string(detMatrix(mat1));
+      } else {
+        resultm = "The matrix was not entered in the correct format";
+      }
+    }
 
     if (op == "mmult" or op == "mdet") {
       rep << resultm;
