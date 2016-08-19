@@ -1,14 +1,16 @@
-
 #include <cmath>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <zmqpp/zmqpp.hpp>
 
 using namespace std;
 using namespace zmqpp;
 
-vector<vector<int>> createMatrix(string &mat) {
-  vector<vector<int>> matrix;
+typedef vector<vector<int>> Matrix;
+
+Matrix createMatrix(string &mat) {
+  Matrix matrix;
   string line;
 
   for (int i = 0; i < mat.size(); i++) {
@@ -28,19 +30,24 @@ vector<vector<int>> createMatrix(string &mat) {
     else line += mat[i];
   }
 
-  cout << "rows: " << matrix.size() << " cols: " << matrix[0].size() << endl;
   return matrix;
 }
 
-vector<vector<int>> multMatrix(vector<vector<int>> &mat1, vector<vector<int>> &mat2) {
+bool isValid(Matrix &mat1, Matrix &mat2) {
   int n = mat1[0].size();
-  int m = mat1.size();
-  int p = mat2[0].size();
-  vector<vector<int>> result(m, vector<int>(p));
+  int m = mat2.size();
+  return n == m;
+}
 
-  for (int i = 0; i < m; i++) {
+Matrix multMatrix(Matrix &mat1, Matrix &mat2) {
+  int n = mat1.size();
+  int m = mat2.size();
+  int p = mat2[0].size();
+  Matrix result(m, vector<int>(p));
+
+  for (int i = 0; i < n; i++) {
     for (int j = 0; j < p; j++) {
-      for (int k = 0; k < n; k++) {
+      for (int k = 0; k < m; k++) {
         result[i][j] += mat1[i][k] * mat2[k][j];
       }
     }
@@ -49,7 +56,22 @@ vector<vector<int>> multMatrix(vector<vector<int>> &mat1, vector<vector<int>> &m
   return result;
 }
 
-void printMatrix(vector<vector<int>> &matrix) {
+string matToString(Matrix &mat) {
+  string text = "[";
+
+  for (int i = 0; i < mat.size(); i++) {
+    text += "[";
+    for (int j = 0; j < mat[i].size(); j++) {
+      if (j) text += " ";
+      text += to_string(mat[i][j]);
+    }
+    text += "]";
+  }
+
+  return text + "]";
+}
+
+void printMatrix(Matrix &matrix) {
   for (int i = 0; i < matrix.size(); i++) {
     for (int j = 0; j < matrix[i].size(); j++) {
       cout << matrix[i][j] << " ";
@@ -75,58 +97,69 @@ int main(int argc, char *argv[]) {
   // receive the message
   while (true) {
     cout << "Receiving message..." << endl;
-    message req;
-    message rep;
+    message req, rep;
     s.receive(req);
 
     string op;
-    string ope1;
-    string ope2;
+    string ope1, ope2;
     req >> op >> ope1;
 
-    int result;
-    int op1;
-    int op2;
-    vector<vector<int>> mat1, mat2, resultm;
+    int64_t result = 0;
+    int op1 = 0, op2 = 0;
+    Matrix mat1, mat2, mat3;
+    string resultm;
 
-    if (op == "sqrt") {
-     op1 = atoi(ope1.c_str());
-     result = sqrt(op1);
-    }
-    if (op == "exp") {
-      op1 = atoi(ope1.c_str());
-      result = exp(op1);
-    }
+    // Binary operations
     if (op == "add") {
       req >> ope2;
-      p1 = atoi(ope1.c_str());
+      op1 = atoi(ope1.c_str());
       op2 = atoi(ope2.c_str());
       result = op1 + op2;
     }
-    if (op == "sub") {
+    else if (op == "sub") {
       req >> ope2;
       op1 = atoi(ope1.c_str());
       op2 = atoi(ope2.c_str());
       result = op1 - op2;
-   }
-   if (op == "mult") {
-     req >> ope2;
-     op1 = atoi(ope1.c_str());
-     op2 = atoi(ope2.c_str());
-     result = op1 * op2;
-   }
-   if (op == "div") {
-     req >> ope2;
-     op1 = atoi(ope1.c_str());
-     op2 = atoi(ope2.c_str());
-     result = op1 / op2;
-   }
-   if (op == "mmult") {
-     req >> ope2;
-     mat1 = createMatrix(ope1);
-     mat2 = createMatrix(ope2);
-     resultm = multMatrix(mat1, mat2);
-   }
+    }
+    else if (op == "mult") {
+      req >> ope2;
+      op1 = atoi(ope1.c_str());
+      op2 = atoi(ope2.c_str());
+      result = op1 * op2;
+    }
+    else if (op == "div") {
+      req >> ope2;
+      op1 = atoi(ope1.c_str());
+      op2 = atoi(ope2.c_str());
+      result = op1 / op2;
+    }
+
+    // Unary operations
+    else if (op == "sqrt") {
+      op1 = atoi(ope1.c_str());
+      result = sqrt(op1);
+    }
+    else if (op == "exp") {
+      op1 = atoi(ope1.c_str());
+      result = exp(op1);
+    }
+
+    // Matrix operations
+    else if (op == "mmult") {
+      req >> ope2;
+      mat1 = createMatrix(ope1);
+      mat2 = createMatrix(ope2);
+
+      // Check if it is posibble multiply mat1 by mat2
+      if (isValid(mat1, mat2)) {
+        mat3 = multMatrix(mat1, mat2);
+        resultm = matToString(mat3);
+      }
+      else {
+        resultm = "It is not possible to do matrix multiplication";
+      }
+    }
 
     // else if (op == "mdet") {
     //   // TODO
@@ -135,9 +168,7 @@ int main(int argc, char *argv[]) {
     if (op == "mmult" or op == "mdet") {
       rep << resultm;
       s.send(rep);
-      cout << "Sent: ";
-      printMatrix(resultm);
-      cout << endl;
+      cout << "Sent: " << resultm << endl;
     }
     else {
       rep << result;

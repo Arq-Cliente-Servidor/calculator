@@ -7,7 +7,8 @@ vector<vector<int>> createMatrix(string &mat) {
   string line;
 
   for (int i = 0; i < mat.size(); i++) {
-    if (mat[i] == '[') continue;
+    if (mat[i] == '[')
+      continue;
     if (mat[i] == ']' and line.size()) {
       vector<int> col;
       stringstream ss(line);
@@ -19,8 +20,8 @@ vector<vector<int>> createMatrix(string &mat) {
 
       matrix.push_back(col);
       line = "";
-    }
-    else line += mat[i];
+    } else
+      line += mat[i];
   }
 
   cout << "rows: " << matrix.size() << " cols: " << matrix[0].size() << endl;
@@ -54,23 +55,40 @@ vector<vector<int>> multMatrix(vector<vector<int>> &mat1, vector<vector<int>> &m
   return result;
 }
 
+string matToString(vector<vector<int>> &mat) {
+  string text = "[";
+
+  for (int i = 0; i < mat.size(); i++) {
+    text += "[";
+    for (int j = 0; j < mat[i].size(); j++) {
+      if (j)
+        text += " ";
+      text += to_string(mat[i][j]);
+    }
+    text += "]";
+  }
+
+  return text + "]";
+}
+
 int main(int argc, char const *argv[]) {
   // Ejemplo de formato:
   // [[1 2 3][4 5 6][1 2 3]] [[7 8 4][2 3 4][3 2 1]]
 
   string m1(argv[1]);
-  string m2(argv[2]);
+  // string m2(argv[2]);
 
-  cout << m1 << endl;
+  // cout << m1 << endl;
   vector<vector<int>> mat1 = createMatrix(m1);
   printMatrix(mat1);
+  cout << matToString(mat1) << endl;
 
-  cout << m2 << endl;
-  vector<vector<int>> mat2 = createMatrix(m2);
-  printMatrix(mat2);
+  // cout << m2 << endl;
+  // vector<vector<int>> mat2 = createMatrix(m2);
+  // printMatrix(mat2);
 
-  vector<vector<int>> mat3 = multMatrix(mat1, mat2);
-  printMatrix(mat3);
+  // vector<vector<int>> mat3 = multMatrix(mat1, mat2);
+  // printMatrix(mat3);
 
   return 0;
 }

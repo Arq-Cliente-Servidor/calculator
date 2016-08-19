@@ -5,22 +5,13 @@
 using namespace std;
 using namespace zmqpp;
 
-void printMatrix(vector<vector<int>> &matrix) {
-  for (int i = 0; i < matrix.size(); i++) {
-    for (int j = 0; j < matrix[i].size(); j++) {
-      cout << matrix[i][j] << " ";
-    }
-    cout << endl;
-  }
-  cout << endl;
-}
-
 int main(int argc, char *argv[]) {
   const string endpoint = "tcp://localhost:4242";
   if (argc != 3 && argc != 4) {
     cerr << "Error calling the program" << endl;
     return 1;
   }
+
   // initialize the 0MQ context
   context ctx;
   socket s(ctx, socket_type::request);
@@ -39,7 +30,7 @@ int main(int argc, char *argv[]) {
     op1 = argv[2];
     req << op << op1;
   }
-  if (argc == 4) {
+  else if (argc == 4) {
     op1 = argv[2];
     op2 = argv[3];
     req << op << op1 << op2;
@@ -52,11 +43,9 @@ int main(int argc, char *argv[]) {
   s.receive(rep);
 
   if (op == "mmult" or op == "mdet") {
-    vector<vector<int>> result;
+    string result;
     rep >> result;
-    cout << "Response ";
-    printMatrix(result);
-    cout << endl;
+    cout << "Response " << result << endl;
   }
   else {
     int64_t result = 0;
