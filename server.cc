@@ -1,3 +1,4 @@
+// Coded by: Sebastian Duque Restrepo - Carolina Gomez Trejos
 #include <cmath>
 #include <iostream>
 #include <sstream>
@@ -14,7 +15,8 @@ Matrix createMatrix(string &mat) {
   string line;
 
   for (int i = 0; i < mat.size(); i++) {
-    if (mat[i] == '[') continue;
+    if (mat[i] == '[')
+      continue;
     if (mat[i] == ']' and line.size()) {
       vector<int> col;
       stringstream ss(line);
@@ -26,8 +28,8 @@ Matrix createMatrix(string &mat) {
 
       matrix.push_back(col);
       line = "";
-    }
-    else line += mat[i];
+    } else
+      line += mat[i];
   }
 
   return matrix;
@@ -62,7 +64,8 @@ string matToString(Matrix &mat) {
   for (int i = 0; i < mat.size(); i++) {
     text += "[";
     for (int j = 0; j < mat[i].size(); j++) {
-      if (j) text += " ";
+      if (j)
+        text += " ";
       text += to_string(mat[i][j]);
     }
     text += "]";
@@ -115,20 +118,17 @@ int main(int argc, char *argv[]) {
       op1 = atoi(ope1.c_str());
       op2 = atoi(ope2.c_str());
       result = op1 + op2;
-    }
-    else if (op == "sub") {
+    } else if (op == "sub") {
       req >> ope2;
       op1 = atoi(ope1.c_str());
       op2 = atoi(ope2.c_str());
       result = op1 - op2;
-    }
-    else if (op == "mult") {
+    } else if (op == "mult") {
       req >> ope2;
       op1 = atoi(ope1.c_str());
       op2 = atoi(ope2.c_str());
       result = op1 * op2;
-    }
-    else if (op == "div") {
+    } else if (op == "div") {
       req >> ope2;
       op1 = atoi(ope1.c_str());
       op2 = atoi(ope2.c_str());
@@ -139,8 +139,7 @@ int main(int argc, char *argv[]) {
     else if (op == "sqrt") {
       op1 = atoi(ope1.c_str());
       result = sqrt(op1);
-    }
-    else if (op == "exp") {
+    } else if (op == "exp") {
       op1 = atoi(ope1.c_str());
       result = exp(op1);
     }
@@ -155,8 +154,7 @@ int main(int argc, char *argv[]) {
       if (isValid(mat1, mat2)) {
         mat3 = multMatrix(mat1, mat2);
         resultm = matToString(mat3);
-      }
-      else {
+      } else {
         resultm = "It is not possible to do matrix multiplication";
       }
     }
@@ -169,8 +167,7 @@ int main(int argc, char *argv[]) {
       rep << resultm;
       s.send(rep);
       cout << "Sent: " << resultm << endl;
-    }
-    else {
+    } else {
       rep << result;
       s.send(rep);
       cout << "Sent: " << result << endl;

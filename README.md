@@ -1,4 +1,6 @@
 # CALCULATOR WITH SOCKETS
+---
+Description of the supported operations:
 
 | Function    | Description     | Input    | Example   | Output|
 | :------------- | :------------- | :------------- | :------------- | :------------- |
@@ -9,3 +11,19 @@
 | sqrt      | (a)^1/2     | sqrt a        |   sqrt 25        | 5         |
 | exp       | e^n         | exp a         |   exp 5         | 148       |
 | mmult     |[[matA]] * [[matB]]| mmult [[a b c][d e f]] [[g h][i j][k l]]|mmult [[2 0 1][3 0 0][5 1 1]] [[1 0 1][1 2 1][1 1 0]]| [[3 1 2][3 0 3][7 3 6]]|
+
+## Executing
+
+Type in your terminal:
+
+      make
+
+    ./server
+
+In other terminal:
+
+      ./client add 5 7
+
+Solution to possible compiling error:
+
+      export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/utp/zmq/lib

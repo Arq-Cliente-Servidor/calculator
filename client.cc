@@ -1,3 +1,4 @@
+// Coded by: Sebastian Duque Restrepo - Carolina Gomez Trejos
 #include <iostream>
 #include <string>
 #include <zmqpp/zmqpp.hpp>
@@ -29,8 +30,7 @@ int main(int argc, char *argv[]) {
   if (argc == 3) {
     op1 = argv[2];
     req << op << op1;
-  }
-  else if (argc == 4) {
+  } else if (argc == 4) {
     op1 = argv[2];
     op2 = argv[3];
     req << op << op1 << op2;
@@ -46,8 +46,7 @@ int main(int argc, char *argv[]) {
     string result;
     rep >> result;
     cout << "Response " << result << endl;
-  }
-  else {
+  } else {
     int64_t result = 0;
     rep >> result;
     cout << "Response " << result << endl;
