@@ -2,6 +2,7 @@
 #include <cmath>
 #include <iostream>
 #include <sstream>
+#include <stack>
 #include <string>
 #include <zmqpp/zmqpp.hpp>
 
@@ -10,6 +11,7 @@ using namespace zmqpp;
 
 typedef vector<vector<int>> Matrix;
 
+// convert a string to an matrix
 Matrix createMatrix(string &mat) {
   Matrix matrix;
   string line;
@@ -35,17 +37,44 @@ Matrix createMatrix(string &mat) {
   return matrix;
 }
 
-bool isValid(Matrix &mat1, Matrix &mat2) {
+// checks if it is possible multiply two matrices
+bool checkMult(Matrix &mat1, Matrix &mat2) {
   int n = mat1[0].size();
   int m = mat2.size();
   return n == m;
+}
+
+// checks if the matrix has the correct format
+bool checkMat(string &mat) {
+  stack<char> brackets;
+
+  for (int i = 0; i < mat.size(); i++) {
+    if (mat[i] == '[')
+      brackets.push(mat[i]);
+    else if (mat[i] == ']') {
+      if (brackets.empty()) return false;
+      brackets.pop();
+    }
+  }
+
+  return brackets.empty();
+}
+
+void printMatrix(Matrix &matrix) {
+  for (int i = 0; i < matrix.size(); i++) {
+    for (int j = 0; j < matrix[i].size(); j++) {
+      cout << matrix[i][j] << " ";
+    }
+    cout << endl;
+  }
+  cout << endl;
 }
 
 Matrix multMatrix(Matrix &mat1, Matrix &mat2) {
   int n = mat1.size();
   int m = mat2.size();
   int p = mat2[0].size();
-  Matrix result(m, vector<int>(p));
+  Matrix result(n, vector<int>(p));
 
   for (int i = 0; i < n; i++) {
     for (int j = 0; j < p; j++) {
@@ -74,15 +103,6 @@ string matToString(Matrix &mat) {
   return text + "]";
 }
 
-void printMatrix(Matrix &matrix) {
-  for (int i = 0; i < matrix.size(); i++) {
-    for (int j = 0; j < matrix[i].size(); j++) {
-      cout << matrix[i][j] << " ";
-    }
-    cout << endl;
-  }
-  cout << endl;
-}
 
 int main(int argc, char *argv[]) {
   const string endpoint = "tcp://*:4242";
@@ -147,15 +167,18 @@ int main(int argc, char *argv[]) {
     // Matrix operations
     else if (op == "mmult") {
       req >> ope2;
-      mat1 = createMatrix(ope1);
-      mat2 = createMatrix(ope2);
-
-      // Check if it is posibble multiply mat1 by mat2
-      if (isValid(mat1, mat2)) {
-        mat3 = multMatrix(mat1, mat2);
-        resultm = matToString(mat3);
+      if (checkMat(ope1) and checkMat(ope2)) {
+        mat1 = createMatrix(ope1);
+        mat2 = createMatrix(ope2);
+        // Check if it is posibble multiply mat1 by mat2
+        if (checkMult(mat1, mat2)) {
+          mat3 = multMatrix(mat1, mat2);
+          resultm = matToString(mat3);
+        } else {
+          resultm = "It is not possible to do matrix multiplication";
+        }
       } else {
-        resultm = "It is not possible to do matrix multiplication";
+        resultm = "The matrix was not entered in the correct format";
       }
     }
 

@@ -28,6 +28,21 @@ vector<vector<int>> createMatrix(string &mat) {
   return matrix;
 }
 
+bool checkMat(string &mat) {
+  stack<char> brackets;
+
+  for (int i = 0; i < mat.size(); i++) {
+    if (mat[i] == '[')
+      brackets.push(mat[i]);
+    else if (mat[i] == ']') {
+      if (brackets.empty()) return false;
+      brackets.pop();
+    }
+  }
+
+  return brackets.empty();
+}
+
 void printMatrix(vector<vector<int>> &matrix) {
   for (int i = 0; i < matrix.size(); i++) {
     for (int j = 0; j < matrix[i].size(); j++) {
@@ -76,12 +91,13 @@ int main(int argc, char const *argv[]) {
   // [[1 2 3][4 5 6][1 2 3]] [[7 8 4][2 3 4][3 2 1]]
 
   string m1(argv[1]);
+  cout << checkMat(m1) << endl;
   // string m2(argv[2]);
 
   // cout << m1 << endl;
-  vector<vector<int>> mat1 = createMatrix(m1);
-  printMatrix(mat1);
-  cout << matToString(mat1) << endl;
+  // vector<vector<int>> mat1 = createMatrix(m1);
+  // printMatrix(mat1);
+  // cout << matToString(mat1) << endl;
 
   // cout << m2 << endl;
   // vector<vector<int>> mat2 = createMatrix(m2);
