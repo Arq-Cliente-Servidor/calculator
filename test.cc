@@ -133,6 +133,50 @@ public:
     return ans;
   }
 
+  // Gauss Jordan Method
+  Matrix<T> inverse() {
+    const double delta = 0.0000001;
+    vector<vector<T>> result(this->getRow(), vector<T>(this->getCol(), 0));
+    vector<vector<T>> copy(this->getElements());
+    T pivot, fact1, fact2;
+
+    // It is initialized to the identity matrix
+    for (int i = 0; i < this->getRow(); i++) {
+      result[i][i] = 1;
+    }
+
+    for (int i = 0; i < this->getRow(); i++) {
+      pivot = copy[i][i];
+
+      for (int j = 0; j < this->getCol(); j++) {
+        fact1 = copy[i][j];
+        fact2 = result[i][j];
+        copy[i][j] = fact1 / pivot;
+        result[i][j] = fact2 / pivot;
+      }
+
+      for (int k = i + 1; k < this->getRow(); k++) {
+        fact1 = copy[k][i];
+        for (int j = 0; j < this->getCol(); j++) {
+          copy[k][j] -= fact1 * copy[i][j];
+        }
+      }
+    }
+
+    // se diagonaliza
+    for (int j = this->getCol() - 1; j >= 0; j--) {
+      for (int i = j - 1; i >= 0; i--) {
+        fact1 = copy[i][j];
+        for (int k = 0; k < this->getCol(); k++) {
+          copy[i][k] -= fact1 * copy[j][k];
+          result[i][k] -= fact1 * result[j][k];
+        }
+      }
+    }
+
+    return Matrix<T>(result);
+  }
+
   void print() {
     for (int i = 0; i < this->getRow(); i++) {
       for (int j = 0; j < this->getCol(); j++) {
@@ -148,14 +192,16 @@ int main(int argc, char const *argv[]) {
   // Ejemplo de formato:
   // [[1 2 3][4 5 6][1 2 3]] [[7 8 4][2 3 4][3 2 1]]
   // [[3 4 -7 6][1 2 -3 4][5 6-7 5][-8 -9 1 2]]
+  // [[1 2 3 4][2 1 5 6][3 5 1 7][4 6 7 1]]
 
   string m1(argv[1]);
   // string m2(argv[2]);
 
-  Matrix<int> mat1;
-  // Matrix<int> mat2;
-
+  Matrix<double> mat1;
   mat1.create(m1);
+  Matrix<double> mat2 = mat1.inverse();
+  mat2.print();
+
 
   // mat2.create(m2);
 
