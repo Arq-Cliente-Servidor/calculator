@@ -42,11 +42,12 @@ int main(int argc, char *argv[]) {
   message rep;
   s.receive(rep);
 
-  if (op == "mmult" or op == "mdet") {
+  if (op == "mmult" or op == "mdet" or op == "minv") {
     string result;
     rep >> result;
     cout << "Response " << result << endl;
-  } else {
+  }
+  else {
     int64_t result = 0;
     rep >> result;
     cout << "Response " << result << endl;

@@ -135,7 +135,6 @@ public:
 
   // Gauss Jordan Method
   Matrix<T> inverse() {
-    const double delta = 0.0000001;
     vector<vector<T>> result(this->getRow(), vector<T>(this->getCol(), 0));
     vector<vector<T>> copy(this->getElements());
     T pivot, fact1, fact2;
@@ -145,25 +144,27 @@ public:
       result[i][i] = 1;
     }
 
+    // we leave the diagonal matrix lower with zeros
     for (int i = 0; i < this->getRow(); i++) {
       pivot = copy[i][i];
 
       for (int j = 0; j < this->getCol(); j++) {
         fact1 = copy[i][j];
         fact2 = result[i][j];
-        copy[i][j] = fact1 / pivot;
         result[i][j] = fact2 / pivot;
+        copy[i][j] = fact1 / pivot;
       }
 
       for (int k = i + 1; k < this->getRow(); k++) {
         fact1 = copy[k][i];
         for (int j = 0; j < this->getCol(); j++) {
           copy[k][j] -= fact1 * copy[i][j];
+          result[k][j] -= fact1 * result[i][j];
         }
       }
     }
 
-    // se diagonaliza
+    // it diagonalized
     for (int j = this->getCol() - 1; j >= 0; j--) {
       for (int i = j - 1; i >= 0; i--) {
         fact1 = copy[i][j];
@@ -200,7 +201,8 @@ int main(int argc, char const *argv[]) {
   Matrix<double> mat1;
   mat1.create(m1);
   Matrix<double> mat2 = mat1.inverse();
-  mat2.print();
+  cout << (isnan(mat1.determinant())) << endl;
+  // mat2.print();
 
 
   // mat2.create(m2);

@@ -105,16 +105,16 @@ public:
   }
 
   string toString() {
-    string text = "[";
+    string text = "\n[";
 
     for (int i = 0; i < this->getRow(); i++) {
-      text += "[";
+      text += (i)? " [" : "[";
       for (int j = 0; j < this->getCol(); j++) {
         if (j)
           text += " ";
         text += to_string(this->elementAt(i, j));
       }
-      text += "]";
+      text += (i < this->getRow() - 1)? "]\n" : "]";
     }
 
     return text + "]";
@@ -141,6 +141,56 @@ public:
     }
 
     return ans;
+  }
+
+  // Inverse for the Gauss Jordan Method
+  Matrix<T> inverse() {
+    vector<vector<T>> result(this->getRow(), vector<T>(this->getCol(), 0));
+    vector<vector<T>> copy(this->getElements());
+    T pivot, fact1, fact2;
+
+    // It is initialized to the identity matrix
+    for (int i = 0; i < this->getRow(); i++) {
+      result[i][i] = 1;
+    }
+
+    // we leave the diagonal matrix lower with zeros
+    for (int i = 0; i < this->getRow(); i++) {
+      pivot = copy[i][i];
+
+      for (int j = 0; j < this->getCol(); j++) {
+        fact1 = copy[i][j];
+        fact2 = result[i][j];
+        result[i][j] = fact2 / pivot;
+        copy[i][j] = fact1 / pivot;
+      }
+
+      for (int k = i + 1; k < this->getRow(); k++) {
+        fact1 = copy[k][i];
+        for (int j = 0; j < this->getCol(); j++) {
+          copy[k][j] -= fact1 * copy[i][j];
+          result[k][j] -= fact1 * result[i][j];
+        }
+      }
+    }
+
+    // it diagonalized
+    for (int j = this->getCol() - 1; j >= 0; j--) {
+      for (int i = j - 1; i >= 0; i--) {
+        fact1 = copy[i][j];
+        for (int k = 0; k < this->getCol(); k++) {
+          copy[i][k] -= fact1 * copy[j][k];
+          result[i][k] -= fact1 * result[j][k];
+        }
+      }
+    }
+
+    return Matrix<T>(result);
+  }
+
+  // checks if a value is infinite, NAN or not
+  bool validValue(T value) {
+    return !isnan(value) and !isinf(value);
   }
 
   void print() {
@@ -242,14 +292,30 @@ int main(int argc, char *argv[]) {
     else if (op == "mdet") {
       if (matDet.checkFormat(ope1)) {
         matDet.create(ope1);
-        matrixResult = to_string(matDet.determinant());
+        if (!matDet.validValue(matDet.determinant())) {
+          matrixResult = "It is not possible to do the determinant of the matrix";
+        }
+        else matrixResult = to_string(matDet.determinant());
       }
       else {
         matrixResult = "The matrix was not entered in the correct format";
       }
     }
 
-    if (op == "mmult" or op == "mdet") {
+    else if (op == "minv") {
+      if (matDet.checkFormat(ope1)) {
+        matDet.create(ope1);
+        if (!matDet.validValue(matDet.determinant()) or matDet.determinant() == 0.0) {
+          matrixResult = "It is not possible to do the inverse of the matrix";
+        }
+        else matrixResult = matDet.inverse().toString();
+      }
+      else {
+        matrixResult = "The matrix was not entered in the correct format";
+      }
+    }
+
+    if (op == "mmult" or op == "mdet" or op == "minv") {
       rep << matrixResult;
       s.send(rep);
       cout << "Sent: " << matrixResult << endl;

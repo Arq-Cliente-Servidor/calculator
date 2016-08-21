@@ -10,7 +10,9 @@ Description of the supported operations:
 | div       | a / b       | div a b       |   div 32 4       | 8         |
 | sqrt      | (a)^1/2     | sqrt a        |   sqrt 25        | 5         |
 | exp       | e^n         | exp a         |   exp 5         | 148       |
-| mmult     |[[matA]] * [[matB]]| mmult [[a b c][d e f]] [[g h][i j][k l]]|mmult [[2 0 1][3 0 0][5 1 1]] [[1 0 1][1 2 1][1 1 0]]| [[3 1 2][3 0 3][7 3 6]]|
+| mmult     | [[matA]] * [[matB]] | mmult [[a b c][d e f]] [[g h][i j][k l]] | mmult [[2 0 1][3 0 0][5 1 1]] [[1 0 1][1 2 1][1 1 0]]| [[3 1 2][3 0 3][7 3 6]]|
+| mdet       | \|matA\|      | mdet [[a b c][d e f]]         |   mdet [[3 4 -7 6][1 2 -3 4][5 6-7 5][-8 -9 1 2]] | 8       |
+| minv       | [[matA]]^-1         | mdet [[a b c][d e f]] |  minv [[1 2][-1 3]]   | [[0.600000 -0.400000][0.200000 0.200000]] |
 
 ## Executing
 

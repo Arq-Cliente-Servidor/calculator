@@ -5,3 +5,5 @@ test
 *.exe
 *.out
 *.app
+
+test.cc
