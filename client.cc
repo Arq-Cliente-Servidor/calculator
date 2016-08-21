@@ -9,7 +9,16 @@ using namespace zmqpp;
 int main(int argc, char *argv[]) {
   const string endpoint = "tcp://localhost:4242";
   if (argc != 3 && argc != 4) {
-    cerr << "Error calling the program" << endl;
+    cerr << "Error calling the program." << endl;
+    return 1;
+  }
+
+  string op(argv[1]);
+  if (argc == 3 and (op == "add" or op == "mult" or op == "div" or op == "sub" or op == "mmult")) {
+    cerr << "Invalid number of operands, expected 2." << endl;
+    return 1;
+  } else if (argc == 4 and (op == "sqrt" or op == "log" or op == "minv" or op == "mdet")) {
+    cerr << "Invalid number of operands, expected 1." << endl;
     return 1;
   }
 
@@ -24,7 +33,6 @@ int main(int argc, char *argv[]) {
   // send a message
   cout << "Sending operation..." << endl;
   message req;
-  string op(argv[1]);
   string op1, op2;
 
   if (argc == 3) {
@@ -46,11 +54,10 @@ int main(int argc, char *argv[]) {
     string result;
     rep >> result;
     cout << "Response " << result << endl;
-  }
-  else {
-    int64_t result = 0;
+  } else {
+    double result = 0.0;
     rep >> result;
-    cout << "Response " << result << endl;
+    cout << "Response " << fixed << result << endl;
   }
 
   cout << "Finished." << endl;
